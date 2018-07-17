@@ -1,0 +1,33 @@
+<% include ../partials/header.ejs %>
+
+<div id="main-container" class="container">
+  <div class="row">
+    <div class="col-lg-3">
+        <div class="border rounded index-column">
+            <h4>To-do List:</h4>
+            <li>Item 1</li>
+            <li>Item 2</li>
+            <li>Item 3</li>
+        </div>
+    </div>
+    <div class="col-lg-9">
+        <div class="border rounded index-column">
+            <h2>Journal Entries:</h3>
+            <% journal.forEach(function(journal){ %>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <img src="<%= journal.image %>" alt="placeholder image" class="img-thumbnail">
+                    </div>
+                    <div class="col-sm-9">
+                        <h5><%= journal.title %></h5>
+                        <%= journal.body %>
+                    </div>
+                </div>
+                <hr>
+            <% }); %>
+        </div>
+    </div>
+  </div>
+</div>
+
+<% include ../partials/footer.ejs %>
