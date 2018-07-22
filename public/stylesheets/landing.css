@@ -9,19 +9,25 @@ body {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#93cede', endColorstr='#49a5bf', GradientType=0 );
 }
 
-#landing-header {
+.container{
+    max-width: 500px;
     position: relative;
     text-align: center;
     padding-top: 30vh;
 }
 
-#landing-header h1 {
+.container h1 {
     font-size: 5em;
     color: #fff;
-    margin: 0;
+    margin-bottom: 0;
 }
 
-#landing-header h3 {
+.container h3 {
     color: #fff;
     margin-top: 0;
+}
+
+input {
+    margin-top: 20px;
+    margin-bottom: 10px;
 }

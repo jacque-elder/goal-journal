@@ -3,31 +3,57 @@
 <div id="main-container" class="container">
   <div class="row">
     <div class="col-lg-3">
-        <div class="border rounded index-column">
-            <h4>To-do List:</h4>
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
+        <div class="border rounded index-column shadow p-3 mb-5 bg-white rounded">
+            <h4>To-do List</h4>
+            
+            <% todo.forEach(function(todo){ %>
+                <% if(todo.isCompleted === false){ %>
+                    <form class="form-inline" id="complete" action="/todo/<%= todo._id %>?_method=PUT" method="POST">
+                        <button type="submit" class="btn btn-sm btn-info mb-2 todo-button"><i class="fas fa-check"></i></button>
+                        <%= todo.item %>
+                    </form>
+                <% } %>
+            <% }); %>
+                
+            <form class="form-group" action="/todo" method="POST">
+                <div class="field">
+                    <input class="form-control form-control-sm" type="text" name="todo[item]" placeholder="What do you need to do?">
+                </div>
+                <input class="form-control btn btn-sm btn-info" type="submit" value="Add new item">
+            </form>
+            
+            <hr>
+            
+            <h4>Completed Tasks</h4>
+                
+            <% todo.forEach(function(todo){ %>
+                <% if(todo.isCompleted === true){ %>
+                    <form class="form-inline" id="delete" action="/todo/<%= todo._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger mb-2 todo-button"><i class="fas fa-trash-alt"></i></button>
+                        <%= todo.item %>
+                    </form>
+                <% } %>
+            <% }); %>
         </div>
     </div>
     <div class="col-lg-9">
-        <div class="border rounded index-column">
+        <div class="border rounded index-column shadow p-3 mb-5 bg-white rounded">
             <h2>Journal Entries:</h3>
             
             <form class="form-group" action="/journals" method="POST">
                 <div class="field">
                     <label>Title</label>
-                    <input type="text" name="journal[title]" placeholder="title">
+                    <input class="form-control form-control-sm" type="text" name="journal[title]" placeholder="title">
                 </div>
                 <div class="field">
                     <label>Image</label>
-                    <input type="text" name="journal[image]" placeholder="image url">
+                    <input class="form-control form-control-sm" type="text" name="journal[image]" placeholder="image url">
                 </div>
                 <div class="field">
                     <label>Post</label>
-                    <textarea name="journal[body]"></textarea>
+                    <textarea class="form-control" name="journal[body]"></textarea>
                 </div>
-                <input class="btn btn-primary" type="submit">
+                <input class="btn btn-info" type="submit">
             </form>
         </div>
 

@@ -1,7 +1,28 @@
-<h1>Login!</h1>
-
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <button>Submit</button>
-</form>
+<html>
+    <head>
+        <title>Goal Progress</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/landing.css">
+    </head>
+    <body>
+        
+    <div class="container">
+        <h1>Login!</h1>
+        <form action="/login" method="POST">
+            <div class="form-row">
+                <div class="col">
+                    <input class="form-control form-control-lg" type="text" name="username" placeholder="username">
+                </div>
+                <div class="col">
+                    <input class="form-control form-control-lg" type="password" name="password" placeholder="password">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col">
+                    <button class="btn btn-light btn-lg">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+        
+<% include ./partials/footer.ejs %>

@@ -3,18 +3,48 @@
 <div id="main-container" class="container">
   <div class="row">
     <div class="col-lg-3">
-        <div class="border rounded index-column">
-            <h4>To-do List:</h4>
-            <li>Item 1</li>
-            <li>Item 2</li>
-            <li>Item 3</li>
+        <div class="border rounded index-column shadow p-3 mb-5 bg-white rounded">
+            <h4>To-do List</h4>
+            
+            <% todo.forEach(function(todo){ %>
+                <% if(todo.isCompleted === false){ %>
+                    <form class="form-inline" id="complete" action="/todo/<%= todo._id %>?_method=PUT" method="POST">
+                        <button type="submit" class="btn btn-sm btn-info mb-2 todo-button"><i class="fas fa-check"></i></button>
+                        <%= todo.item %>
+                    </form>
+                <% } %>
+            <% }); %>
+                
+            <form class="form-group" action="/todo" method="POST">
+                <div class="field">
+                    <input class="form-control form-control-sm" type="text" name="todo[item]" placeholder="What do you need to do?">
+                </div>
+                <input class="form-control btn btn-sm btn-info" type="submit" value="Add new item">
+            </form>
+            
+            <hr>
+            
+            <h4>Completed Tasks</h4>
+                
+            <% todo.forEach(function(todo){ %>
+                <% if(todo.isCompleted === true){ %>
+                    <form class="form-inline" id="delete" action="/todo/<%= todo._id %>?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-sm btn-danger mb-2 todo-button"><i class="fas fa-trash-alt"></i></button>
+                        <%= todo.item %>
+                    </form>
+                <% } %>
+            <% }); %>
         </div>
     </div>
     <div class="col-lg-9">
-        <div class="border rounded index-column">
-            <h2>Journal Title</h3>
-            <img src="https://images.unsplash.com/photo-1528844323638-9696af3c5056?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=071bdc560eee753a56f203cc409ea841&auto=format&fit=crop&w=1350&q=80" class="img-fluid" alt="Journal Image">
-            BLAH BLAH BLAH BLAH BLAH BLAH
+        <div class="border rounded index-column shadow p-3 mb-5 bg-white rounded">
+            <h2><%= journal.title %></h3>
+            <img src="<%= journal.image %>" class="img-fluid" alt="Journal Image">
+            <p><%= journal.body %></p>
+            <a class="btn btn-info" href="/journals/<%= journal._id %>/edit">Edit</a>
+            <form class="delete-form" id="delete" action="/journals/<%= journal._id %>?_method=DELETE" method="POST">
+                <button class="btn btn-danger">Delete</button>
+            </form>
         </div>
     </div>
   </div>

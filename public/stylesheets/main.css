@@ -1,3 +1,24 @@
+body {
+    background-color: #93cede;
+    color: 	#505050;
+}
+
+a {
+    color: #17a2b8;
+}
+
+a:hover{
+    text-decoration: none;
+    color: #5bc0de;
+}
+
+input[type="submit"]{
+    margin-top: 10px;
+}
+
+textarea {
+    height: 300px;
+}
 
 #main-container {
     margin-top: 20px;
@@ -6,4 +27,18 @@
 .index-column {
     padding: 15px;
     margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.picture-column {
+    padding: 20px;
+    background-color: #fff;
+}
+
+.todo-button {
+    margin-right: 5px;
+}
+
+.delete-form {
+    display: inline;
 }

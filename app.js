@@ -7,7 +7,10 @@ var express          = require("express"),
     flash            = require("connect-flash"),
     passport         = require("passport"),
     LocalStrategy    = require("passport-local"),
-    User             = require("./models/user");
+    User             = require("./models/user"),
+    Journal          = require("./models/journal.js"),
+    Todo             = require("./models/todo.js"),
+    middleware       = require("./middleware");
 
 //APP CONFIG
 mongoose.connect("mongodb://localhost:27017/goal_progress_app", { useNewUrlParser: true });
@@ -37,16 +40,6 @@ app.use(function(req, res, next){
     res.locals.success = req.flash("success");
     next();
 });
-
-//MONGOOSE MODEL CONFIG
-var journalSchema = new mongoose.Schema({
-    title: String,
-    image: String,
-    body: String,
-    created: {type: Date, default: Date.now}
-});
-
-var Journal = mongoose.model("Journal", journalSchema);
 
 //ROUTES
 app.get("/", function(req, res){
@@ -96,26 +89,53 @@ app.post("/register", function(req, res){
 //JOURNAL ROUTES
 
 //index
-app.get("/journals", function(req, res){
-    Journal.find({}, function(err, journal){
+app.get("/journals", middleware.isLoggedIn, function(req, res){
+    Journal.find({'author.id': req.user._id}, function(err, journal){
         if(err){
-            console.log("error");
+            console.log(err);
         } else{
-            res.render("journals/index", {journal: journal});
+            Todo.find({'author.id':req.user._id}, function(err, todo){
+                if(err){
+                    console.log(err);
+                } else {
+                    res.render("journals/index", {journal: journal, todo: todo});                    
+                }
+            });
         }
     });
 });
 
 //new journal form
-app.get("/journals/new", function(req,res){
-    res.render("journals/new");
+app.get("/journals/new", middleware.isLoggedIn, function(req,res){
+    Journal.find({'author.id': req.user._id}, function(err, journal){
+    if(err){
+        console.log(err);
+    } else{
+        Todo.find({'author.id':req.user._id}, function(err, todo){
+            if(err){
+                console.log(err);
+            } else {
+                res.render("journals/new", {journal: journal, todo: todo});                    
+            }
+        });
+    }
+    });
 });
 
 //create journal
-app.post("/journals", function(req,res){
+app.post("/journals", middleware.isLoggedIn, function(req,res){
 req.body.journal.body = req.sanitize(req.body.journal.body);
-    //create blog
-    Journal.create(req.body.journal, function(err, newJournal){
+    // get data from form and add to campgrounds array
+    var title = req.body.journal.title;
+    var image = req.body.journal.image;
+    var body = req.body.journal.body;
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var newJournal= {title: title, image: image, body: body, author: author};
+    //create journal
+    Journal.create(newJournal, function(err, newJournal){
         if(err){
             res.render("new");
         } else{
@@ -125,23 +145,103 @@ req.body.journal.body = req.sanitize(req.body.journal.body);
 });
 
 //edit journal form
-app.get("journals/edit", function(req, res){
-    res.render("edit");
+app.get("/journals/:id/edit", middleware.checkJournalOwnership, function(req,res){
+    Journal.findById(req.params.id, function(err, foundJournal){
+        if(err){
+            res.redirect("/journals");
+        } else{
+            
+            Todo.find({'author.id':req.user._id}, function(err, todo){
+                if(err){
+                    console.log(err);
+                } else {
+                    res.render("journals/edit", {journal: foundJournal, todo: todo});                    
+                }
+            });
+        }
+    });
 });
 
 //update journal
-app.post("journals/:id", function(req, res){
-    
+app.put("/journals/:id", middleware.checkJournalOwnership, function(req, res){
+    Journal.findByIdAndUpdate(req.params.id, req.body.journal, function(err, updatedJournal){
+       if(err){
+           res.redirect("/journals");
+       } else{
+           res.redirect("/journals/" + req.params.id);
+       }
+    });
 });
 
 //delete journal
-app.delete("journal/:id", function(req, res){
-    
+app.delete("/journals/:id", middleware.checkJournalOwnership, function(req, res){
+    Journal.findByIdAndRemove(req.params.id, function(err){
+        if(err){
+            res.redirect("/journals");
+        } else {
+            res.redirect("/journals");
+        }
+    });
 });
 
 //show journal
-app.get("/journals/:id", function(req, res){
-    res.render("journals/show");
+app.get("/journals/:id", middleware.checkJournalOwnership, function(req, res){
+    Journal.findById(req.params.id, function(err, foundJournal){
+        if(err){
+            console.log(err);
+        } 
+        Todo.find({'author.id':req.user._id}, function(err, todo){
+            if(err){
+                console.log(err);
+            } else {
+                res.render("journals/show", {journal: foundJournal, todo: todo});                    
+            }
+        });
+    });
+});
+
+//todo routes
+app.put("/todo/:id", middleware.isLoggedIn, function(req, res){
+    Todo.findByIdAndUpdate(req.params.id, {isCompleted: true}, {new: true}, function(err, updatedTodo){
+       if(err){
+           res.redirect("back");
+       } else{
+           res.redirect("back");
+       }
+    });
+});
+
+//create new todo
+app.post("/todo", middleware.isLoggedIn, function(req,res){
+req.body.todo.item = req.sanitize(req.body.todo.item);
+    var item = req.body.todo.item;
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var newTodo= {item: item, author: author};
+    //create journal
+    Todo.create(newTodo, function(err, newTodo){
+        if(err){
+            console.log(err);
+        } else{
+            res.redirect("back");
+        }
+    });
+});
+
+//update todo
+
+
+//delete todo
+app.delete("/todo/:id", middleware.isLoggedIn, function(req, res){
+    Todo.findByIdAndRemove(req.params.id, function(err){
+        if(err){
+            res.redirect("back");
+        } else {
+            res.redirect("back");
+        }
+    });
 });
 
 
