@@ -13,7 +13,8 @@ var express          = require("express"),
     middleware       = require("./middleware");
 
 //APP CONFIG
-mongoose.connect("mongodb://localhost:27017/goal_progress_app", { useNewUrlParser: true });
+//mongoose.connect("mongodb://localhost:27017/goal_progress_app", { useNewUrlParser: true });
+mongoose.connect("mongodb://jacque-elder:52j2-gP4@ds145871.mlab.com:45871/goal-journal", { useNewUrlParser: true });
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
