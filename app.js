@@ -15,9 +15,11 @@ var express          = require("express"),
 var indexRoutes    = require("./routes/index"),
     journalRoutes    = require("./routes/journals"),
     todoRoutes      = require("./routes/todos");
+    
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/goal_progress_app";
 
 //APP CONFIG
-mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
+mongoose.connect(url, { useNewUrlParser: true });
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
