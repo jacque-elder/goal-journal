@@ -13,8 +13,7 @@ var express          = require("express"),
     middleware       = require("./middleware");
 
 //APP CONFIG
-//mongoose.connect("mongodb://localhost:27017/goal_progress_app", { useNewUrlParser: true });
-mongoose.connect("mongodb://jacque-elder:52j2-gP4@ds145871.mlab.com:45871/goal-journal", { useNewUrlParser: true });
+mongoose.connect(process.env.DATABASEURL, { useNewUrlParser: true });
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -60,7 +59,7 @@ app.post("/login", passport.authenticate("local",
     }), function(req, res){
 });
 
-// logout route
+//logout route
 app.get("/logout", function(req, res){
    req.logout();
    req.flash("success", "Logged you out!");
